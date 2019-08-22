@@ -1,0 +1,245 @@
+openapi: 3.0.0
+servers:
+  - description: Localhost
+    url: 'http://localhost:8008'
+info:
+  description: API for access to filterable and sortable cached collection of ORG.IDs
+  version: 'will-be-set-at-runtime'
+  title: Winding Tree ORG.ID Explorer Cache
+paths:
+  /:
+    get:
+      summary: API info
+      responses:
+        '200':
+          description: Basic information about this API instance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  docs:
+                    type: string
+                    description: Link to the API documentation.
+                  info:
+                    type: string
+                    description: Link to more information about the API.
+                  version:
+                    type: string
+                    description: Deployed API version number.
+                  config:
+                    type: string
+                    description: Which config is the API using.
+  /organizations:
+    get:
+      summary: Get a list of organizations.
+      parameters:
+        - name: location
+          in: query
+          description: Filter by distance (in kilometers) to the given location. Maximum allowed distance in the filter is 200 km. Format is "lat,long:distance" and you can specify multiple areas as multiple query parameters with this name.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              pattern: '^[\d.]+,[\d.]+:[\d.]+$'
+            example: ['50.08,14.44:20']
+        - name: segment
+          in: query
+          description: Filter by segment
+          required: false
+          schema:
+            type: string
+            example: hotels,otas
+        - name: date_created_from
+          in: query
+          description: Filter by min dateCreated
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2019-01-01'
+        - name: date_created_to
+          in: query
+          description: Filter by max dateCreated
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2019-09-09'
+        - name: sorting_field
+          in: query
+          description: Field to sort by. Use either `sorting` or `sortByDistance`. Default is `dateCreated`.
+          required: false
+          schema:
+            type: string
+            default: dateCreated
+            enum:
+              - dateCreated
+              - dateUpdated
+              - address
+              - name
+              - city
+              - segment
+        - name: sort_by_distance
+          in: query
+          description: Sort by distance (in kilometers) from given point (lat, long). Use either `sorting` or `sortByDistance`.
+          required: false
+          schema:
+            type: string
+            pattern: '^[\d.]+,[\d.]+$'
+          example: 50.08,14.44
+        - name: sorting_direction
+          in: query
+          description: Direction to sort by.
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: limit
+          in: query
+          description: Max number of items to return.
+          required: false
+          schema:
+            type: number
+        - name: offset
+          in: query
+          description: Number of items to skip. Use for pagination.
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: A list of organizations matching the request criteria.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    description: List of resolved hotels.
+                    items:
+                      $ref: '#/components/schemas/OrganizationListing'
+                  totalCount:
+                    type: number
+                    description: Total number of items for current filter
+        '400':
+          $ref: '#/components/responses/InvalidRequestError'
+  '/organizations/{address}':
+    summary: Get detailed info about a specific organization
+    parameters:
+      - name: address
+        required: true
+        in: path
+        description: '0xORG ETH address'
+        schema:
+          $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+    get:
+      responses:
+        '200':
+          description: Organization data from last snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDetail'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+components:
+  responses:
+    InvalidRequestError:
+      description: The server does not understand to the request (HTTP code 400)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: The object was not found (HTTP code 404)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error (HTTP code 500)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    OrganizationListing:
+      type: object
+      properties:
+        address:
+          $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+        lifDepositValue:
+          description: Current Lif deposit value
+          type: number
+        segments:
+          description: Comma separated names of segments this ORG.ID is registered in
+          type: string
+        dateCreated:
+          description: Date of 0xORG contract creation (based on mined block number)
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Date of last modification (on-chain or ORG.JSON change)
+          type: string
+          format: date-time
+        city:
+          description: Simplified location description
+          type: string
+        gpsCoords:
+          description: GPS coordinates to display ORG.ID on a map
+          $ref: '@windingtree/wt-hotel-schemas/swagger.yaml#/components/schemas/Location'
+        name:
+          description: ORG.ID legal entity name
+          type: string
+    OrganizationDetail:
+      allOf:
+        - $ref: '#/components/schemas/OrganizationListing'
+        - type: object
+          properties:
+            environment:
+              description: ETH environment (mainnet/ropsten/...)
+              type: string
+            timestamp:
+              description: Timestamp of cached ORG.ID snapshot
+              type: string
+              format: date-time
+            orgJsonContent:
+              description: Content of ORG.JSON
+              type: string
+            orgJsonHash:
+              description: Hash of ORG.JSON content
+              type: string
+            orgJsonUri:
+              description: URI pointing to ORG.JSON
+              type: string
+            owner:
+              description: Organization owner ETH address
+              $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+            associatedKeys:
+              description: List of ETH addresses associated with the organization
+              type: array
+              items:
+                $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+
+    Error:
+      title: Error
+      description: Default schema for errors returned by API.
+      properties:
+        status:
+          type: number
+          description: HTTP status
+        code:
+          type: string
+          description: Computer-readable error. Use this for comparison.
+        short:
+          type: string
+          description: Human-readable error with a short description of the error.
+        long:
+          type: string
+          description: Verbose explanation of what happened.

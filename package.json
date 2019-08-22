@@ -1,0 +1,38 @@
+{
+  "name": "orgid-explorer-cache",
+  "version": "0.0.1",
+  "description": "Backend service for orgid-explorer",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "test",
+    "start": "node src/index.js",
+    "dev": "npm run resolve-swagger-references && WT_CONFIG=dev node src/index.js",
+    "resolve-swagger-references": "node management/resolve-swagger-references.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windingtree/orgid-explorer-cache.git"
+  },
+  "author": "Ondrej Chmelar <ondrej.chmelar@fragaria.cz>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/windingtree/orgid-explorer-cache/issues"
+  },
+  "homepage": "https://github.com/windingtree/orgid-explorer-cache#readme",
+  "devDependencies": {
+    "@windingtree/wt-hotel-schemas": "^0.8.3",
+    "@windingtree/wt-shared-schemas": "^0.7.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-slash": "^2.0.1",
+    "morgan": "^1.9.1",
+    "swagger-ui-express": "^4.0.7",
+    "winston": "^3.2.1",
+    "yamljs": "^0.3.0"
+  }
+}
