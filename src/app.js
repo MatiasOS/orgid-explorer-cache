@@ -1,5 +1,6 @@
 const path = require('path');
 
+const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
@@ -8,8 +9,8 @@ const YAML = require('yamljs');
 const slash = require('express-slash');
 
 const config = require('./config');
-const { version } = require('../package.json');
-const { HttpError, HttpInternalError, Http404Error, HttpBadRequestError } = require('./errors');
+const { version, homepage } = require('../package.json');
+const { HttpError, HttpInternalError, Http404Error, HttpInvalidRequestError } = require('./errors');
 // const hotels = require('./controllers/hotels');
 // const notifications = require('./controllers/notifications');
 
@@ -26,11 +27,12 @@ swaggerDocument.info.version = version;
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
+app.use(bodyParser.json());
 
 app.use((err, req, res, next) => {
   // Catch and handle bodyParser errors.
   if (err.statusCode === 400 && err.type === 'entity.parse.failed') {
-    return next(new HttpBadRequestError('badRequest', 'Invalid JSON.'));
+    return next(new HttpInvalidRequestError('badRequest', 'Invalid JSON.'));
   }
   next(err);
 });
@@ -46,7 +48,7 @@ app.use(morgan(':remote-addr :remote-user [:date[clf]] :method :url HTTP/:http-v
 app.get('/', (req, res) => {
   res.status(200).json({
     docs: `${config.baseUrl}/docs/`,
-    info: 'https://github.com/windingtree/orgid-explorer-cache/blob/master/README.md',
+    info: homepage,
     version,
     config: process.env.WT_CONFIG,
   });

@@ -1,6 +1,8 @@
 const winston = require('winston');
 
-module.exports = {
+const env = process.env.WT_CONFIG || 'dev';
+
+module.exports = Object.assign({
   port: 8008,
   baseUrl: process.env.BASE_URL || 'http://localhost:8008',
   logger: winston.createLogger({
@@ -12,4 +14,4 @@ module.exports = {
       }),
     ],
   }),
-};
+}, require(`./${env}`));
