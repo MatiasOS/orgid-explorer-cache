@@ -1,4 +1,4 @@
-const Snapshot = require('./models/hotel');
+const Snapshot = require('./models/snapshot');
 
 /**
  * Create all necessary tables.
