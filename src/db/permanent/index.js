@@ -1,3 +1,4 @@
+const Coordinates = require('./models/coordinates');
 const Snapshot = require('./models/snapshot');
 
 /**
@@ -6,6 +7,7 @@ const Snapshot = require('./models/snapshot');
  * @return {Promise<void>}
  */
 const setupDB = async () => {
+  await Coordinates.createTable();
   await Snapshot.createTable();
 };
 
@@ -15,6 +17,7 @@ const setupDB = async () => {
  * @return {Promise<void>}
  */
 const resetDB = async () => {
+  await Coordinates.dropTable();
   await Snapshot.dropTable();
   await setupDB();
 };
