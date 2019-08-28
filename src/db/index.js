@@ -17,6 +17,7 @@ const setupDB = async () => {
  * @return {Promise<void>}
  */
 const resetDB = async () => {
+  console.log('Resetting DB');
   await Promise.all([
     Permanent.resetDB(),
   ]);

@@ -20,7 +20,6 @@ const createTable = async () => {
     table.float('gpsCoordsLon');
     table.boolean('isLastSnapshot');
 
-    table.unique(['address']);
     table.index(['address']);
     table.index(['isLastSnapshot', 'address']);
     table.index(['isLastSnapshot']);
@@ -36,13 +35,13 @@ const dropTable = async () => {
 };
 
 const upsert = async (snapshotData) => {
-  db.transaction((trx) => {
+  return db.transaction((trx) => {
     return trx(TABLE).where({ address: snapshotData.address }).update({isLastSnapshot: false}).then(() => {
       return trx(TABLE).insert(snapshotData);
     });
   })
   .then(function(inserts) {
-    console.log(inserts.length + ' organizations updated');
+    process.stdout.write(inserts.length + ' organizations updated... ');
   })
   .catch((err) => console.error(err));
 };

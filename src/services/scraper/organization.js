@@ -4,17 +4,16 @@ const lib = require('zos-lib');
 const Contracts = lib.Contracts;
 const Organization = Contracts.getFromNodeModules('@windingtree/wt-contracts', 'Organization');
 const LifDeposit = Contracts.getFromNodeModules('@windingtree/trust-clue-lif-deposit', 'LifDeposit');
-const config = require('../../config');
+const Snapshot = require('../../db/permanent/models/snapshot');
+const { db } = require('../../config');
 const { TABLE: coordsCacheTableName, upsert: upsertCoordinatesCache } = require('../../db/permanent/models/coordinates');
-const coordsCache = config.db(coordsCacheTableName);
 
-const provider = new Web3.providers.HttpProvider(config.web3Provider);
-const web3 = new Web3(provider);
 
 async function findCoordinates(query){
-  const cached = await coordsCache.where({ query: query });
-  if (cached) {
-    return cached;
+  const cached = await db(coordsCacheTableName).where({ query: query });
+  if (cached.length > 0) {
+    process.stdout.write(`using coords from cache... `);
+    return cached[0];
   }
 
   // https://operations.osmfoundation.org/policies/nominatim/
@@ -27,18 +26,24 @@ async function findCoordinates(query){
   } else {
     res = location[0];
   }
-  const coordsData = { query, lat: res.lat, lon: res.lon };
+  const coordsData = { query, gpsCoordsLat: res.lat, gpsCoordsLon: res.lon };
   await upsertCoordinatesCache(coordsData);
-  return res;
+  return coordsData;
 }
 
-const scrapeOrganization = async function (address) {
+const scrapeOrganization = async function (envName, segment, orgAddress, providerAddress, lifDepositAddress) {
+  process.stdout.write(`Scraping organization ${orgAddress}: `);
   const res = {
-    address,
+    environment: envName,
+    segments: segment,
+    address: orgAddress,
   };
 
   // on-chain
-  const hotel = Organization.at(address);
+  process.stdout.write('on-chain... ');
+  const provider = new Web3.providers.HttpProvider(providerAddress);
+  const web3 = new Web3(provider);
+  const hotel = Organization.at(orgAddress);
   hotel.setProvider(web3.currentProvider);
 
   res.owner = await hotel.methods.owner().call();
@@ -52,6 +57,7 @@ const scrapeOrganization = async function (address) {
   res.associatedKeys = associatedKeys.join(',');
 
   // off-chain
+  process.stdout.write('off-chain... ');
   const orgJsonResponse = await fetch(res.orgJsonUri);
   res.orgJsonContent = await orgJsonResponse.text();
   const orgJsonContent = JSON.parse(res.orgJsonContent);
@@ -67,13 +73,17 @@ const scrapeOrganization = async function (address) {
   res.gpsCoordsLon = gpsCoordsLon;
 
   // deposit
-  const deposit = LifDeposit.at(config.lifDepositAddress);
+  process.stdout.write('lif-deposit... ');
+  const deposit = LifDeposit.at(lifDepositAddress);
   deposit.setProvider(web3.currentProvider);
-  res.lifDepositValue = await deposit.methods.getDepositValue(address).call();
+  res.lifDepositValue = await deposit.methods.getDepositValue(orgAddress).call();
 
   res.timestamp = new Date();
   res.isLastSnapshot = true;
 
+  await Snapshot.upsert(res);
+
+  console.log('done.');
   return res;
 };
 

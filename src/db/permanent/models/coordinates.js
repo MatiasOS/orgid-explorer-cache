@@ -23,7 +23,7 @@ const upsert = async (coordsData) => {
   return db(TABLE).where({ query: coordsData.query }).delete()
   .then(function(deleted) {
     return db(TABLE).insert(coordsData).then(function(inserted) {
-      console.log(inserted.length + ' coordinates inserted');
+      process.stdout.write(inserted.length + ' coordinates inserted... ');
     });
   })
   .catch((err) => console.error(err));
