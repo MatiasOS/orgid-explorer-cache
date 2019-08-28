@@ -16,15 +16,18 @@ const createTable = async () => {
     table.string('owner', 63).notNullable();
     table.jsonb('orgJsonContent');
     table.float('lifDepositValue');
-    table.float('gps_coords_lat');
-    table.float('gps_coords_lon');
+    table.float('gpsCoordsLat');
+    table.float('gpsCoordsLon');
+    table.boolean('isLastSnapshot');
 
     table.unique(['address']);
     table.index(['address']);
+    table.index(['isLastSnapshot', 'address']);
+    table.index(['isLastSnapshot']);
     table.index(['city']);
     table.index(['name']);
-    table.index(['gps_coords_lat']);
-    table.index(['gps_coords_lon']);
+    table.index(['gpsCoordsLat']);
+    table.index(['gpsCoordsLon']);
   });
 };
 
@@ -32,10 +35,22 @@ const dropTable = async () => {
   await db.schema.dropTableIfExists(TABLE);
 };
 
+const upsert = async (snapshotData) => {
+  db.transaction((trx) => {
+    return trx(TABLE).where({ address: snapshotData.address }).update({isLastSnapshot: false}).then(() => {
+      return trx(TABLE).insert(snapshotData);
+    });
+  })
+  .then(function(inserts) {
+    console.log(inserts.length + ' organizations updated');
+  })
+  .catch((err) => console.error(err));
+};
+
 module.exports = {
   createTable,
   dropTable,
-  // upsert,
+  upsert,
   // delete: delete_,
   // getHotelData,
   // getAddresses,

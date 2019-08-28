@@ -175,7 +175,7 @@ components:
         address:
           $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
         lifDepositValue:
-          description: Current Lif deposit value
+          description: Current Lif deposit value (in Lif-wei)
           type: number
         segments:
           description: Comma separated names of segments this ORG.ID is registered in

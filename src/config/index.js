@@ -14,4 +14,7 @@ module.exports = Object.assign({
       }),
     ],
   }),
+  directories: ['0x2C29c421D7fd7Be4Cc2bfb6d1a44426E43021914'],
+  lifDepositAddress: '0xfCfD5E296E4eD50B5F261b11818c50B73ED6c89E',
+  web3Provider: 'https://ropsten.infura.io/v3/7697444efe2e4751bc2f20f7f4549c36',
 }, require(`./${env}`));

@@ -43,14 +43,19 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
+    "@windingtree/trust-clue-lif-deposit": "^0.2.0",
+    "@windingtree/wt-contracts": "^0.8.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-slash": "^2.0.1",
     "morgan": "^1.9.1",
+    "node-fetch": "^2.6.0",
     "sqlite3": "^4.1.0",
     "swagger-ui-express": "^4.0.7",
+    "web3": "^1.2.1",
     "winston": "^3.2.1",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "zos-lib": "^2.4.2"
   }
 }
