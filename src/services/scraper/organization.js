@@ -78,7 +78,6 @@ const scrapeOrganization = async function (envName, segment, orgAddress, provide
   res.lifDepositValue = await deposit.methods.getDepositValue(orgAddress).call();
 
   res.timestamp = new Date();
-  res.isLastSnapshot = true;
 
   await Snapshot.upsert(res);
 
