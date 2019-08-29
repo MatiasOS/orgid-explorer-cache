@@ -185,15 +185,18 @@ components:
           type: string
           format: date-time
         dateUpdated:
-          description: Date of last modification (on-chain or ORG.JSON change)
+          description: Date of last modification (as marked in ORG.JSON)
           type: string
           format: date-time
         city:
           description: Simplified location description
           type: string
-        gpsCoords:
-          description: GPS coordinates to display ORG.ID on a map
-          $ref: '@windingtree/wt-hotel-schemas/swagger.yaml#/components/schemas/Location'
+        gpsCoordsLat:
+          description: GPS latitude coordinates to display ORG.ID on a map
+          type: float
+        gpsCoordsLon:
+          description: GPS longitude coordinates to display ORG.ID on a map
+          type: float
         name:
           description: ORG.ID legal entity name
           type: string

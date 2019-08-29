@@ -11,8 +11,7 @@ const slash = require('express-slash');
 const config = require('./config');
 const { version, homepage } = require('../package.json');
 const { HttpError, HttpInternalError, Http404Error, HttpInvalidRequestError } = require('./errors');
-// const hotels = require('./controllers/hotels');
-// const notifications = require('./controllers/notifications');
+const organizations = require('./controllers/organizations');
 
 const app = express();
 
@@ -59,8 +58,8 @@ const router = express.Router({
   strict: true,
 });
 
-// router.get('/hotels', hotels.getList);
-// router.post('/notifications/:subscription_token', notifications.accept);
+router.get('/organizations', organizations.getList);
+router.get('/organizations/:orgAddress', organizations.getDetail);
 
 app.use(router);
 app.use(slash());

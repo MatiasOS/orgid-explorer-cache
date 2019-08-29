@@ -46,13 +46,24 @@ const upsert = async (snapshotData) => {
   .catch((err) => console.error(err));
 };
 
+const findByAddress = async (address) => {
+    const organizations = await db(TABLE).where({ address: address, isLastSnapshot: true });
+    if (organizations.length > 0) {
+      const organization = organizations[0];
+      for (const field of TIMESTAMP_FIELDS) {
+        organization[field] = new Date(organization[field]);
+      }
+      organization.associatedKeys = organization.associatedKeys.split(',');
+      delete organization.isLastSnapshot;
+      return organization;
+    }
+    return null;
+};
+
 module.exports = {
   createTable,
   dropTable,
   upsert,
-  // delete: delete_,
-  // getHotelData,
-  // getAddresses,
-  // deleteObsoleteParts,
+  findByAddress,
   TABLE,
 };
