@@ -4,7 +4,6 @@ const Contracts = lib.Contracts;
 const Entrypoint = Contracts.getFromNodeModules('@windingtree/wt-contracts', 'WindingTreeEntrypoint');
 const { scrapeDirectory } = require('./directory');
 
-
 const scrapeEnvironment = async function (envName, environment) {
   console.log(`Scraping environment ${envName}`);
   const provider = new Web3.providers.HttpProvider(environment.provider);

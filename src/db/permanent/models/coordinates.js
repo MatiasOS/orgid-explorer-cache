@@ -20,13 +20,11 @@ const dropTable = async () => {
 
 const upsert = async (coordsData) => {
   coordsData.dateCached = new Date();
-  return db(TABLE).where({ query: coordsData.query }).delete()
-  .then(function(deleted) {
-    return db(TABLE).insert(coordsData).then(function(inserted) {
-      process.stdout.write(inserted.length + ' coordinates inserted... ');
-    });
+  await db(TABLE).where({ query: coordsData.query }).delete().catch((err) => console.error(err));
+  return db(TABLE).insert(coordsData).then(function (inserted) {
+    process.stdout.write(inserted.length + ' coordinates inserted... ');
   })
-  .catch((err) => console.error(err));
+    .catch((err) => console.error(err));
 };
 
 module.exports = {

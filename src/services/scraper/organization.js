@@ -8,17 +8,16 @@ const Snapshot = require('../../db/permanent/models/snapshot');
 const { db } = require('../../config');
 const { TABLE: coordsCacheTableName, upsert: upsertCoordinatesCache } = require('../../db/permanent/models/coordinates');
 
-
-async function findCoordinates(query){
+async function findCoordinates (query) {
   const cached = await db(coordsCacheTableName).where({ query: query });
   if (cached.length > 0) {
-    process.stdout.write(`using coords from cache... `);
+    process.stdout.write('using coords from cache... ');
     return cached[0];
   }
 
   // https://operations.osmfoundation.org/policies/nominatim/
   const uri = `https://nominatim.openstreetmap.org/search?format=json&email=info@windingtree.com&limit=1&q=${query}`;
-  const response = await fetch(uri, { headers: { 'User-Agent': 'Winding Tree orgid-explorer scraper' }});
+  const response = await fetch(uri, { headers: { 'User-Agent': 'Winding Tree orgid-explorer scraper' } });
   const location = await response.json();
   let res;
   if (location.length === 0) {
@@ -52,7 +51,7 @@ const scrapeOrganization = async function (envName, segment, orgAddress, provide
   const createdBlock = await hotel.methods.created().call();
   const createdTimestamp = (await web3.eth.getBlock(createdBlock)).timestamp;
   res.dateCreated = new Date(createdTimestamp * 1000);
-  let associatedKeys = await hotel.methods.getAssociatedKeys().call();
+  const associatedKeys = await hotel.methods.getAssociatedKeys().call();
   associatedKeys.shift(); // remove zeroeth item
   res.associatedKeys = associatedKeys.join(',');
 

@@ -4,7 +4,6 @@ const Contracts = lib.Contracts;
 const SegmentDirectory = Contracts.getFromNodeModules('@windingtree/wt-contracts', 'SegmentDirectory');
 const { scrapeOrganization } = require('./organization');
 
-
 const scrapeDirectory = async function (envName, address, providerAddress, lifDepositAddress) {
   const provider = new Web3.providers.HttpProvider(providerAddress);
   const web3 = new Web3(provider);

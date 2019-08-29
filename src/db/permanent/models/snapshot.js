@@ -36,28 +36,28 @@ const dropTable = async () => {
 
 const upsert = async (snapshotData) => {
   return db.transaction((trx) => {
-    return trx(TABLE).where({ address: snapshotData.address }).update({isLastSnapshot: false}).then(() => {
+    return trx(TABLE).where({ address: snapshotData.address }).update({ isLastSnapshot: false }).then(() => {
       return trx(TABLE).insert(snapshotData);
     });
   })
-  .then(function(inserts) {
-    process.stdout.write(inserts.length + ' organizations updated... ');
-  })
-  .catch((err) => console.error(err));
+    .then(function (inserts) {
+      process.stdout.write(inserts.length + ' organizations updated... ');
+    })
+    .catch((err) => console.error(err));
 };
 
 const findByAddress = async (address) => {
-    const organizations = await db(TABLE).where({ address: address, isLastSnapshot: true });
-    if (organizations.length > 0) {
-      const organization = organizations[0];
-      for (const field of TIMESTAMP_FIELDS) {
-        organization[field] = new Date(organization[field]);
-      }
-      organization.associatedKeys = organization.associatedKeys.split(',');
-      delete organization.isLastSnapshot;
-      return organization;
+  const organizations = await db(TABLE).where({ address: address, isLastSnapshot: true });
+  if (organizations.length > 0) {
+    const organization = organizations[0];
+    for (const field of TIMESTAMP_FIELDS) {
+      organization[field] = new Date(organization[field]);
     }
-    return null;
+    organization.associatedKeys = organization.associatedKeys.split(',');
+    delete organization.isLastSnapshot;
+    return organization;
+  }
+  return null;
 };
 
 module.exports = {
