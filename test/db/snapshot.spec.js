@@ -2,79 +2,59 @@
 /* eslint-disable no-unused-expressions */
 const { expect, assert } = require('chai');
 
+const { EXAMPLE_SNAPSHOT } = require('../utils');
 const { resetDB } = require('../../src/db');
 const { findAll, findByAddress, upsert } = require('../../src/db/permanent/models/snapshot');
-
-const EXAMPLE_SNAPSHOT = {
-  address: '0x1',
-  owner: '0x2',
-  associatedKeys: '0x3',
-  orgJsonContent: '{}',
-  lifDepositValue: 25000000000000000000,
-  gpsCoordsLat: 5,
-  gpsCoordsLon: 15,
-  segments: 'hotels',
-  city: 'Prague',
-  name: 'Test ORG.ID',
-  environment: 'test',
-  orgJsonHash: '0x123456',
-  orgJsonUri: 'http://uri.json/',
-  dateCreated: new Date(),
-  dateUpdated: new Date(),
-  timestamp: new Date(),
-};
 
 describe('Snapshot DB', function () {
   beforeEach(async () => {
     await resetDB();
   });
 
-  describe('GET /', () => {
-    it('should be empty initially', async () => {
-      const orgs = await findAll();
-      expect(orgs.length).to.equal(0);
-    });
+  it('should be empty initially', async () => {
+    const orgs = await findAll();
+    expect(orgs.length).to.equal(0);
+  });
 
-    it('should return inserted data', async () => {
-      await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
+  it('should return inserted data', async () => {
+    await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
 
-      const orgs = await findAll();
-      expect(orgs.length).to.equal(1);
-    });
+    const orgs = await findAll();
+    expect(orgs.length).to.equal(1);
+  });
 
-    it('should search by address', async () => {
-      await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
+  it('should search by address', async () => {
+    await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
 
-      const org = await findByAddress(EXAMPLE_SNAPSHOT.address);
-      expect(org.address).to.equal(EXAMPLE_SNAPSHOT.address);
-      expect(org.owner).to.equal(EXAMPLE_SNAPSHOT.owner);
-    });
+    const org = await findByAddress(EXAMPLE_SNAPSHOT.address);
+    expect(org.address).to.equal(EXAMPLE_SNAPSHOT.address);
+    expect(org.owner).to.equal(EXAMPLE_SNAPSHOT.owner);
+  });
 
-    it('should return null for unknown address', async () => {
-      await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
+  it('should return null for unknown address', async () => {
+    await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
 
-      const org = await findByAddress('0x0');
-      expect(org).to.be.null;
-    });
+    const org = await findByAddress('0x0');
+    expect(org).to.be.null;
+  });
 
-    it('should work with no associated keys', async () => {
+  it('should work with no associated keys', async () => {
+    const snapshot = Object.assign({}, EXAMPLE_SNAPSHOT);
+    delete snapshot.associatedKeys;
+    await upsert(snapshot);
+
+    const org = await findByAddress('0x1');
+    expect(org.associatedKeys).to.be.null;
+  });
+
+  it('should throw without owner', async () => {
+    try {
       const snapshot = Object.assign({}, EXAMPLE_SNAPSHOT);
-      delete snapshot.associatedKeys;
+      delete snapshot.owner;
       await upsert(snapshot);
-
-      const org = await findByAddress('0x1');
-      expect(org.associatedKeys).to.be.null;
-    });
-
-    it('should throw without owner', async () => {
-      try {
-        const snapshot = Object.assign({}, EXAMPLE_SNAPSHOT);
-        delete snapshot.owner;
-        await upsert(snapshot);
-        assert(false, 'upsert should have thrown');
-      } catch (e) {
-        expect(e).to.match(/NOT NULL constraint failed: org_snapshots\.owner/);
-      }
-    });
+      assert(false, 'upsert should have thrown');
+    } catch (e) {
+      expect(e).to.match(/NOT NULL constraint failed: org_snapshots\.owner/);
+    }
   });
 });
