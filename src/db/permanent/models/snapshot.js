@@ -46,15 +46,27 @@ const upsert = async (snapshotData) => {
     .catch((err) => console.error(err));
 };
 
+const serialize = function (organization) {
+  for (const field of TIMESTAMP_FIELDS) {
+    organization[field] = new Date(organization[field]);
+  }
+  organization.associatedKeys = organization.associatedKeys.split(',');
+  delete organization.isLastSnapshot;
+};
+
+const findAll = async () => {
+  const organizations = await db(TABLE).where({ isLastSnapshot: true });
+  for (const organization of organizations) {
+    serialize(organization);
+  }
+  return organizations;
+};
+
 const findByAddress = async (address) => {
   const organizations = await db(TABLE).where({ address: address, isLastSnapshot: true });
   if (organizations.length > 0) {
     const organization = organizations[0];
-    for (const field of TIMESTAMP_FIELDS) {
-      organization[field] = new Date(organization[field]);
-    }
-    organization.associatedKeys = organization.associatedKeys.split(',');
-    delete organization.isLastSnapshot;
+    serialize(organization);
     return organization;
   }
   return null;
@@ -64,6 +76,7 @@ module.exports = {
   createTable,
   dropTable,
   upsert,
+  findAll,
   findByAddress,
   TABLE,
 };
