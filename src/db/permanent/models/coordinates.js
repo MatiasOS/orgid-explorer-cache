@@ -23,13 +23,17 @@ const upsert = async (coordsData) => {
   await db(TABLE).where({ query: coordsData.query }).delete().catch((err) => console.error(err));
   return db(TABLE).insert(coordsData).then(function (inserted) {
     process.stdout.write(inserted.length + ' coordinates inserted... ');
-  })
-    .catch((err) => console.error(err));
+  });
+};
+
+const find = async (query) => {
+  return db(TABLE).where(query);
 };
 
 module.exports = {
   createTable,
   dropTable,
   upsert,
+  find,
   TABLE,
 };

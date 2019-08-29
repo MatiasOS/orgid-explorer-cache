@@ -5,11 +5,10 @@ const Contracts = lib.Contracts;
 const Organization = Contracts.getFromNodeModules('@windingtree/wt-contracts', 'Organization');
 const LifDeposit = Contracts.getFromNodeModules('@windingtree/trust-clue-lif-deposit', 'LifDeposit');
 const Snapshot = require('../../db/permanent/models/snapshot');
-const { db } = require('../../config');
-const { TABLE: coordsCacheTableName, upsert: upsertCoordinatesCache } = require('../../db/permanent/models/coordinates');
+const { find: findInCoordinatesCache, upsert: upsertCoordinatesCache } = require('../../db/permanent/models/coordinates');
 
 async function findCoordinates (query) {
-  const cached = await db(coordsCacheTableName).where({ query: query });
+  const cached = await findInCoordinatesCache({ query: query });
   if (cached.length > 0) {
     process.stdout.write('using coords from cache... ');
     return cached[0];

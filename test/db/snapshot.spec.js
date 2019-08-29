@@ -2,20 +2,8 @@
 /* eslint-disable no-unused-expressions */
 const { expect, assert } = require('chai');
 
-const { db } = require('../../src/config');
 const { resetDB } = require('../../src/db');
 const { findAll, findByAddress, upsert } = require('../../src/db/permanent/models/snapshot');
-
-// Global "before" hook - runs before all tests.
-before(async () => {
-  await resetDB();
-});
-
-// Global "after" hook - runs after all tests.
-// (Without it, the test suite won't return.)
-after(async () => {
-  await db.destroy();
-});
 
 const EXAMPLE_SNAPSHOT = {
   address: '0x1',
@@ -37,10 +25,7 @@ const EXAMPLE_SNAPSHOT = {
 };
 
 describe('Snapshot DB', function () {
-  before(async () => {
-    await resetDB();
-  });
-  after(async () => {
+  beforeEach(async () => {
     await resetDB();
   });
 
