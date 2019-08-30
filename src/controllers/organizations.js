@@ -2,7 +2,7 @@ const { findAllCurrent, findByAddress } = require('../db/permanent/models/snapsh
 
 const getList = async function (req, res, next) {
   try {
-    const sortBy = req.query.sorting_field;
+    const sortBy = req.query.sortingField;
     const organizations = await findAllCurrent(sortBy);
     res.status(200).json(organizations);
   } catch (e) {

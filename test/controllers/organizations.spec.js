@@ -72,7 +72,7 @@ describe('Organization Controller', function () {
 
       it('should sort by address', async () => {
         await request(server)
-          .get('/organizations?sorting_field=address')
+          .get('/organizations?sortingField=address')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x1');
@@ -83,7 +83,7 @@ describe('Organization Controller', function () {
 
       it('should sort by dateCreated', async () => {
         await request(server)
-          .get('/organizations?sorting_field=dateCreated')
+          .get('/organizations?sortingField=dateCreated')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x3');
@@ -94,7 +94,7 @@ describe('Organization Controller', function () {
 
       it('should sort by dateUpdated', async () => {
         await request(server)
-          .get('/organizations?sorting_field=dateUpdated')
+          .get('/organizations?sortingField=dateUpdated')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x2');
@@ -105,7 +105,7 @@ describe('Organization Controller', function () {
 
       it('should sort by name', async () => {
         await request(server)
-          .get('/organizations?sorting_field=name')
+          .get('/organizations?sortingField=name')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x3');
@@ -116,7 +116,7 @@ describe('Organization Controller', function () {
 
       it('should sort by city', async () => {
         await request(server)
-          .get('/organizations?sorting_field=city')
+          .get('/organizations?sortingField=city')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x3');
@@ -127,7 +127,7 @@ describe('Organization Controller', function () {
 
       it('should sort by segments', async () => {
         await request(server)
-          .get('/organizations?sorting_field=segments')
+          .get('/organizations?sortingField=segments')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x3');
@@ -138,7 +138,7 @@ describe('Organization Controller', function () {
 
       it('should sort in reverse direction', async () => {
         await request(server)
-          .get('/organizations?sorting_field=-address')
+          .get('/organizations?sortingField=-address')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x3');
@@ -149,7 +149,7 @@ describe('Organization Controller', function () {
 
       it('should sort by dateCreated in reverse direction', async () => {
         await request(server)
-          .get('/organizations?sorting_field=-dateCreated')
+          .get('/organizations?sortingField=-dateCreated')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x2');
@@ -166,7 +166,7 @@ describe('Organization Controller', function () {
         await upsert(snapshotData4);
 
         await request(server)
-          .get('/organizations?sorting_field=-name,city')
+          .get('/organizations?sortingField=-name,city')
           .expect(200)
           .expect((res) => {
             expect(res.body[0].address).to.equal('0x4');

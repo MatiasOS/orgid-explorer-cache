@@ -51,7 +51,7 @@ paths:
           schema:
             type: string
             example: hotels,otas
-        - name: date_created_from
+        - name: dateCreatedFrom
           in: query
           description: Filter by min dateCreated
           required: false
@@ -59,7 +59,7 @@ paths:
             type: string
             format: date
             example: '2019-01-01'
-        - name: date_created_to
+        - name: dateCreatedTo
           in: query
           description: Filter by max dateCreated
           required: false
@@ -67,17 +67,17 @@ paths:
             type: string
             format: date
             example: '2019-09-09'
-        - name: sorting_field
+        - name: sortingField
           in: query
           description: |
-            Field to sort by. Use either `sorting_field` or `sort_by_distance`. Prefix field name with `-` to reverse direction.
+            Field to sort by. Use either `sortingField` or `sortByDistance`. Prefix field name with `-` to reverse direction.
             Default is `-dateCreated` (newest first).
             It is allowed to sort by multiple fields separated by comma (e.g. ?sorting_field=name,address) or multiple query params (e.g. ?sorting_field=name&sorting_field=address).
           required: false
           schema:
             type: string
             default: -dateCreated
-        - name: sort_by_distance
+        - name: sortByDistance
           in: query
           description: Sort by distance (in kilometers) from given point (lat, long). Use either `sorting` or `sortByDistance`.
           required: false
