@@ -1,8 +1,9 @@
-const { findAll, findByAddress } = require('../db/permanent/models/snapshot');
+const { findAllCurrent, findByAddress } = require('../db/permanent/models/snapshot');
 
 const getList = async function (req, res, next) {
   try {
-    const organizations = await findAll();
+    const sortBy = req.query.sorting_field;
+    const organizations = await findAllCurrent(sortBy);
     res.status(200).json(organizations);
   } catch (e) {
     next(e);

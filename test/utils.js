@@ -17,6 +17,20 @@ const EXAMPLE_SNAPSHOT = {
   timestamp: new Date(),
 };
 
+const dateFuture = () => {
+  const res = new Date();
+  res.setDate(res.getDate() + 10);
+  return res;
+};
+
+const datePast = () => {
+  const res = new Date();
+  res.setDate(res.getDate() - 10);
+  return res;
+};
+
 module.exports = {
   EXAMPLE_SNAPSHOT,
+  dateFuture,
+  datePast,
 };

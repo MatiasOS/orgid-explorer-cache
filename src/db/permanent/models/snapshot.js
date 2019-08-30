@@ -56,8 +56,25 @@ const serialize = function (organization) {
   delete organization.isLastSnapshot;
 };
 
-const findAll = async () => {
-  const organizations = await db(TABLE).where({ isLastSnapshot: true });
+const prepareSorting = function (sortBy) {
+  if (!Array.isArray(sortBy)) {
+    sortBy = sortBy.split(',');
+  }
+  const res = [];
+  for (let field of sortBy) {
+    let direction = 'asc';
+    if (field.startsWith('-')) {
+      field = field.substring(1);
+      direction = 'desc';
+    }
+    res.push(`${field} COLLATE NOCASE ${direction}`);
+  }
+  return res;
+};
+const findAllCurrent = async (sortBy = '-dateCreated') => {
+  const orderClause = prepareSorting(sortBy);
+  const qs = db(TABLE).where({ isLastSnapshot: true }).orderByRaw(orderClause);
+  const organizations = await qs;
   for (const organization of organizations) {
     serialize(organization);
   }
@@ -78,7 +95,7 @@ module.exports = {
   createTable,
   dropTable,
   upsert,
-  findAll,
+  findAllCurrent,
   findByAddress,
   TABLE,
 };

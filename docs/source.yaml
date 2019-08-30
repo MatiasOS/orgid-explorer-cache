@@ -69,18 +69,14 @@ paths:
             example: '2019-09-09'
         - name: sorting_field
           in: query
-          description: Field to sort by. Use either `sorting` or `sortByDistance`. Default is `dateCreated`.
+          description: |
+            Field to sort by. Use either `sorting_field` or `sort_by_distance`. Prefix field name with `-` to reverse direction.
+            Default is `-dateCreated` (newest first).
+            It is allowed to sort by multiple fields separated by comma (e.g. ?sorting_field=name,address) or multiple query params (e.g. ?sorting_field=name&sorting_field=address).
           required: false
           schema:
             type: string
-            default: dateCreated
-            enum:
-              - dateCreated
-              - dateUpdated
-              - address
-              - name
-              - city
-              - segment
+            default: -dateCreated
         - name: sort_by_distance
           in: query
           description: Sort by distance (in kilometers) from given point (lat, long). Use either `sorting` or `sortByDistance`.
@@ -89,16 +85,6 @@ paths:
             type: string
             pattern: '^[\d.]+,[\d.]+$'
           example: 50.08,14.44
-        - name: sorting_direction
-          in: query
-          description: Direction to sort by.
-          required: false
-          schema:
-            type: string
-            default: asc
-            enum:
-              - asc
-              - desc
         - name: limit
           in: query
           description: Max number of items to return.

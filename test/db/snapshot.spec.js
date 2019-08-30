@@ -4,7 +4,7 @@ const { expect, assert } = require('chai');
 
 const { EXAMPLE_SNAPSHOT } = require('../utils');
 const { resetDB } = require('../../src/db');
-const { findAll, findByAddress, upsert } = require('../../src/db/permanent/models/snapshot');
+const { findAllCurrent, findByAddress, upsert } = require('../../src/db/permanent/models/snapshot');
 
 describe('Snapshot DB', function () {
   beforeEach(async () => {
@@ -12,14 +12,14 @@ describe('Snapshot DB', function () {
   });
 
   it('should be empty initially', async () => {
-    const orgs = await findAll();
+    const orgs = await findAllCurrent();
     expect(orgs.length).to.equal(0);
   });
 
   it('should return inserted data', async () => {
     await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
 
-    const orgs = await findAll();
+    const orgs = await findAllCurrent();
     expect(orgs.length).to.equal(1);
   });
 
