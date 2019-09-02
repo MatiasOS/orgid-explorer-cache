@@ -60,3 +60,6 @@ jobs:
     - pip install --user awscli
     - export PATH=$PATH:$HOME/.local/bin
     - WT_CONFIG=prod npm run deploy-aws-production
+env:
+  global:
+  - secure: TxUF3MCgZYYJGNucEtGkoJ1HWRBwj6vQRH8URk1+F3q3B4nuBplrHUyEiGlUp+jzQtakC/1Vbg6wNWnOBAAODjSzI0ijA21X3Y/HL5XTAw9W49xXp6tbq9MU1SKdVFniAJOSeDcMIUv9fMPfVyY254tHqmt0isW8LkkO6x96O2XwkGouJaFQlVzVxDtshxm2s+qwkKRMSRjLMeBpy6wRFKYX8f3wqMN5yGhKGm/uISzq05OoPE17T7t7gyPdQxes4E0IOiFogpwU1nOuQ6XJT530STda1ZhsnzA86pzrt3n7BhXFodINQqUy7AFRsoz8rAmOvwxLuXgQcrgjrD46EPWTC28hVSM/Y3wg423+X8vn25MFdSbD/lMna96ogNds9PAk5snn44houoTUnqu8iMRnMtI70abOzm+WwWtxqIhG1JbNI4nh/xfUjb4+bliyxDjH+x5u6tus7y+PmOQKbmgqFq23z0n31u5gxvUs35/R+8R1cgI8xNY9+Im5/sghKszS1rUdIx5FHg7FJ00pMZE/V1UmsHMxZ8bxPLcrG6o4dq4msqmJG+83ey+OuRwEdP0KNpNjLBGw+2UQoQoAqSaWNJNY0PcwJ7NEzVYgHsdiTv5jyJCgbs0vlXzMV1NqLVAzVWFy3LhITHg1SM4SdSn9WUyqdsxXWUcTXcVvpFA=
