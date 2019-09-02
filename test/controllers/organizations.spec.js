@@ -203,6 +203,7 @@ describe('Organization Controller', function () {
         snapshotData1.dateCreated = new Date();
         snapshotData2.dateCreated = dateFuture(10);
         snapshotData3.dateCreated = datePast(10);
+        snapshotData3.segments = 'hotels,otas';
         await upsert(snapshotData1);
         await upsert(snapshotData3);
         await upsert(snapshotData2);
@@ -240,6 +241,16 @@ describe('Organization Controller', function () {
             expect(res.body.length).to.equal(2);
             expect(res.body[0].address).to.equal('0x2');
             expect(res.body[1].address).to.equal('0x1');
+          });
+      });
+
+      it('should filter by segments', async () => {
+        await request(server)
+          .get(`/organizations?segments=otas`)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(1);
+            expect(res.body[0].address).to.equal('0x3');
           });
       });
     });

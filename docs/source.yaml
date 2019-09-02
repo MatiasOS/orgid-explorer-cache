@@ -44,9 +44,11 @@ paths:
               type: string
               pattern: '^[\d.]+,[\d.]+:[\d.]+$'
             example: ['50.08,14.44:20']
-        - name: segment
+        - name: segments
           in: query
-          description: Filter by segment
+          description: >
+            Filter by segment. If you want to search for organizations that are in multiple segments
+            use comma separated values (no spaces) in the order the segments are registered in entrypoint.
           required: false
           schema:
             type: string

@@ -79,6 +79,9 @@ const applyFilter = (qs, filter) => {
   if (filter && filter.dateCreatedTo) {
     qs.where('dateCreated', '<', new Date(filter.dateCreatedTo).getTime());
   }
+  if (filter && filter.segments) {
+    qs.where('segments', 'like', `%${filter.segments}%`);
+  }
 };
 
 const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
