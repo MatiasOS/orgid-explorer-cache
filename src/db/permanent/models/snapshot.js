@@ -71,9 +71,20 @@ const prepareSorting = function (sortBy) {
   }
   return res;
 };
-const findAllCurrent = async (sortBy = '-dateCreated') => {
+
+const applyFilter = (qs, filter) => {
+  if (filter && filter.dateCreatedFrom) {
+    qs.where('dateCreated', '>=', new Date(filter.dateCreatedFrom).getTime());
+  }
+  if (filter && filter.dateCreatedTo) {
+    qs.where('dateCreated', '<', new Date(filter.dateCreatedTo).getTime());
+  }
+};
+
+const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   const orderClause = prepareSorting(sortBy);
   const qs = db(TABLE).where({ isLastSnapshot: true }).orderByRaw(orderClause);
+  applyFilter(qs, filter);
   const organizations = await qs;
   for (const organization of organizations) {
     serialize(organization);

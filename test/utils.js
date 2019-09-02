@@ -17,15 +17,15 @@ const EXAMPLE_SNAPSHOT = {
   timestamp: new Date(),
 };
 
-const dateFuture = () => {
+const dateFuture = (offset = 10) => {
   const res = new Date();
-  res.setDate(res.getDate() + 10);
+  res.setDate(res.getDate() + offset);
   return res;
 };
 
-const datePast = () => {
+const datePast = (offset = 10) => {
   const res = new Date();
-  res.setDate(res.getDate() - 10);
+  res.setDate(res.getDate() - offset);
   return res;
 };
 

@@ -50,6 +50,7 @@ describe('Organization Controller', function () {
 
     describe('sorting', () => {
       before(async () => {
+        await resetDB();
         const snapshotData1 = Object.assign({}, EXAMPLE_SNAPSHOT);
         const snapshotData2 = Object.assign({}, EXAMPLE_SNAPSHOT);
         const snapshotData3 = Object.assign({}, EXAMPLE_SNAPSHOT);
@@ -173,6 +174,72 @@ describe('Organization Controller', function () {
             expect(res.body[1].address).to.equal('0x2');
             expect(res.body[2].address).to.equal('0x1');
             expect(res.body[3].address).to.equal('0x3');
+          });
+      });
+    });
+
+    describe('filtering', () => {
+      let dateLimitFrom, dateLimitTo;
+
+      const formatDate = (date) => {
+          const d = new Date(date);
+          let month = '' + (d.getMonth() + 1);
+          let day = '' + d.getDate();
+          const year = d.getFullYear();
+
+          if (month.length < 2) month = '0' + month;
+          if (day.length < 2) day = '0' + day;
+
+          return [year, month, day].join('-');
+      };
+
+      before(async () => {
+        await resetDB();
+        const snapshotData1 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        const snapshotData2 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        const snapshotData3 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        snapshotData2.address = '0x2';
+        snapshotData3.address = '0x3';
+        snapshotData1.dateCreated = new Date();
+        snapshotData2.dateCreated = dateFuture(10);
+        snapshotData3.dateCreated = datePast(10);
+        await upsert(snapshotData1);
+        await upsert(snapshotData3);
+        await upsert(snapshotData2);
+
+        dateLimitFrom = datePast(5);
+        dateLimitTo = dateFuture(5);
+      });
+
+      it('should filter by date created', async () => {
+        await request(server)
+          .get(`/organizations?dateCreatedFrom=${formatDate(dateLimitFrom)}&dateCreatedTo=${formatDate(dateLimitTo)}`)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(1);
+            expect(res.body[0].address).to.equal('0x1');
+          });
+      });
+
+      it('should filter by date created upper limit', async () => {
+        await request(server)
+          .get(`/organizations?dateCreatedTo=${formatDate(dateLimitTo)}`)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(2);
+            expect(res.body[0].address).to.equal('0x1');
+            expect(res.body[1].address).to.equal('0x3');
+          });
+      });
+
+      it('should filter by date created lower limit', async () => {
+        await request(server)
+          .get(`/organizations?dateCreatedFrom=${formatDate(dateLimitFrom)}`)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(2);
+            expect(res.body[0].address).to.equal('0x2');
+            expect(res.body[1].address).to.equal('0x1');
           });
       });
     });
