@@ -21,7 +21,7 @@ to update.
 ## Configuration
 
 Configurable envvars:
-- `WT_CONFIG` - Environment (dev/test)
+- `WT_CONFIG` - Environment (dev/test/prod)
 - `LOG_LEVEL` - Log level
 - `BASE_URL` - Base URL where deployed
 
