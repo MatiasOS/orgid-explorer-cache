@@ -1,0 +1,62 @@
+language: node_js
+notifications:
+  email: false
+cache:
+  directories:
+  - "$HOME/.npm"
+install: case $TRAVIS_BRANCH in greenkeeper*) npm i;; *) npm ci;; esac;
+jobs:
+  include:
+  - stage: test
+    script:
+    - npm run lint
+    - npm run resolve-swagger-references
+    - npm test
+    - npm run coverage
+  - stage: NPM develop release
+    if: branch = develop
+    script:
+    - npm run resolve-swagger-references
+    - npm version preminor --preid="$TRAVIS_COMMIT" --force
+    deploy:
+      provider: npm
+      email: devops@windingtree.com
+      skip_cleanup: true
+      tag: develop
+      api_key: "$NPM_TOKEN"
+      on:
+        repo: windingtree/orgid-explorer-cache
+        branch: develop
+  - stage: Build and publish docker image
+    sudo: true
+    services:
+    - docker
+    if: tag IS present
+    script:
+    - npm run resolve-swagger-references
+    - docker build -t windingtree/orgid-explorer-cache :$TRAVIS_BRANCH .
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push windingtree/orgid-explorer-cache :$TRAVIS_BRANCH
+    - docker tag windingtree/orgid-explorer-cache :$TRAVIS_BRANCH windingtree/orgid-explorer-cache :latest
+    - docker push windingtree/orgid-explorer-cache :latest
+  - stage: NPM release
+    if: tag IS present
+    script:
+    - npm run resolve-swagger-references
+    - echo 'Deploying to NPM...'
+    deploy:
+      provider: npm
+      email: devops@windingtree.com
+      skip_cleanup: true
+      api_key: "$NPM_TOKEN"
+      on:
+        repo: windingtree/orgid-explorer-cache
+        tags: true
+  - stage: Start service from docker with latest merged tag
+    install: true
+    sudo: true
+    if: branch = release/production
+    script:
+    - pip install --user awscli
+    - export PATH=$PATH:$HOME/.local/bin
+    - WT_CONFIG=prod npm run deploy-aws-production

@@ -13,7 +13,8 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "start": "npm run resolve-swagger-references && WT_CONFIG=prod node src/index.js",
     "dev": "npm run resolve-swagger-references && WT_CONFIG=dev node src/index.js",
-    "resolve-swagger-references": "node management/resolve-swagger-references.js"
+    "resolve-swagger-references": "node management/resolve-swagger-references.js",
+    "deploy-aws-production": "./management/deploy-aws.sh production"
   },
   "repository": {
     "type": "git",
