@@ -37,7 +37,8 @@ jobs:
     - docker build -t windingtree/orgid-explorer-cache :$TRAVIS_BRANCH .
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker push windingtree/orgid-explorer-cache :$TRAVIS_BRANCH
-    - docker tag windingtree/orgid-explorer-cache :$TRAVIS_BRANCH windingtree/orgid-explorer-cache :latest
+    - docker tag windingtree/orgid-explorer-cache :$TRAVIS_BRANCH windingtree/orgid-explorer-cache
+      :latest
     - docker push windingtree/orgid-explorer-cache :latest
   - stage: NPM release
     if: tag IS present
@@ -63,3 +64,4 @@ jobs:
 env:
   global:
   - secure: TxUF3MCgZYYJGNucEtGkoJ1HWRBwj6vQRH8URk1+F3q3B4nuBplrHUyEiGlUp+jzQtakC/1Vbg6wNWnOBAAODjSzI0ijA21X3Y/HL5XTAw9W49xXp6tbq9MU1SKdVFniAJOSeDcMIUv9fMPfVyY254tHqmt0isW8LkkO6x96O2XwkGouJaFQlVzVxDtshxm2s+qwkKRMSRjLMeBpy6wRFKYX8f3wqMN5yGhKGm/uISzq05OoPE17T7t7gyPdQxes4E0IOiFogpwU1nOuQ6XJT530STda1ZhsnzA86pzrt3n7BhXFodINQqUy7AFRsoz8rAmOvwxLuXgQcrgjrD46EPWTC28hVSM/Y3wg423+X8vn25MFdSbD/lMna96ogNds9PAk5snn44houoTUnqu8iMRnMtI70abOzm+WwWtxqIhG1JbNI4nh/xfUjb4+bliyxDjH+x5u6tus7y+PmOQKbmgqFq23z0n31u5gxvUs35/R+8R1cgI8xNY9+Im5/sghKszS1rUdIx5FHg7FJ00pMZE/V1UmsHMxZ8bxPLcrG6o4dq4msqmJG+83ey+OuRwEdP0KNpNjLBGw+2UQoQoAqSaWNJNY0PcwJ7NEzVYgHsdiTv5jyJCgbs0vlXzMV1NqLVAzVWFy3LhITHg1SM4SdSn9WUyqdsxXWUcTXcVvpFA=
+  - secure: R0M3UhCX2OR19u3q9DBHuQPvrSXIN+c2HB5+Bggjn9gezid3b1KMNI/hBva7/Z8N503cjxN4LJk4IiBe6XXlC37QPWkNq5ZP3B1dJ6jPPFCyYyxGy/aVCuxaIRqoYWN6JgubxoHO4QLAE2Y8xJc2swbeR2+wGAOBULVJJozJQzdQiNvWWOS59oJFndi6ACnp7G3/vOaRHSGpq3R/sQo7cyD3PhcBxxNssfCC8qslFbIfwXMJQzW+JF/bzDxSG7AAuivwo2Pg/yrw4soGZsscScsjIZXcZI9TIAmoHoopQVinCNQuQttSH+vbs2sv9/1X5eE62EvUJ54qeeR5RAD8eNEud2I4dUFFewtdMQBAbPkShHIdhXprr9MWNhs90nUhY2qdVrWqhdQffzJnqm2XT3AR4NBBSIlDRaupAm8bPCQiLclfsw2gP4u0OmCjNKrt+FczqrsqSfGg8borVEysC/lPvOlMn7mQ3yosaKcy+7lZyikd1wjIaQtXFP48X+8zsWoUo9+z2Ty/0nhh2qEgu0eJkq7cExpGNKo/5Qn9MmBqqHodTcXtyO8M9xAvs5XUmWXHPMjGYOZHvuRBdfzv1n4pkL7PuB9HpGjjYOa3IW9XG/5OTAsm7/cGGwcLd7+G7QTJwQZeldUoz/yUVDYJlh4ymbPv7ojsm2/OiSQRWP8=
