@@ -36,9 +36,9 @@ jobs:
     - npm run resolve-swagger-references
     - docker build -t windingtree/orgid-explorer-cache :$TRAVIS_BRANCH .
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push windingtree/orgid-explorer-cache :$TRAVIS_BRANCH
-    - docker tag windingtree/orgid-explorer-cache :$TRAVIS_BRANCH windingtree/orgid-explorer-cache:latest
-    - docker push windingtree/orgid-explorer-cache :latest
+    - docker push windingtree/orgid-explorer-cache:$TRAVIS_BRANCH
+    - docker tag windingtree/orgid-explorer-cache:$TRAVIS_BRANCH windingtree/orgid-explorer-cache:latest
+    - docker push windingtree/orgid-explorer-cache:latest
   - stage: NPM release
     if: tag IS present
     script:
