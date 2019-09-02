@@ -19,7 +19,7 @@ const prepareToScrapeDirectory = async function (orgSegmentsIndex, segmentName, 
       if (orgSegmentsIndex[orgAddress]) {
         orgSegmentsIndex[orgAddress] = `${orgSegmentsIndex[orgAddress]},${segment}`;
       } else {
-        orgSegmentsIndex[orgAddress] = segment
+        orgSegmentsIndex[orgAddress] = segment;
       }
     }
   }

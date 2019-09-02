@@ -182,15 +182,15 @@ describe('Organization Controller', function () {
       let dateLimitFrom, dateLimitTo;
 
       const formatDate = (date) => {
-          const d = new Date(date);
-          let month = '' + (d.getMonth() + 1);
-          let day = '' + d.getDate();
-          const year = d.getFullYear();
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
 
-          if (month.length < 2) month = '0' + month;
-          if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
 
-          return [year, month, day].join('-');
+        return [year, month, day].join('-');
       };
 
       before(async () => {
@@ -246,7 +246,7 @@ describe('Organization Controller', function () {
 
       it('should filter by segments', async () => {
         await request(server)
-          .get(`/organizations?segments=otas`)
+          .get('/organizations?segments=otas')
           .expect(200)
           .expect((res) => {
             expect(res.body.length).to.equal(1);
