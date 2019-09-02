@@ -59,7 +59,9 @@ const scrapeOrganization = async function (orgAddress, segments, envName, provid
   const orgJsonResponse = await fetch(res.orgJsonUri);
   res.orgJsonContent = await orgJsonResponse.text();
   const orgJsonContent = JSON.parse(res.orgJsonContent);
-  res.dateUpdated = new Date(orgJsonContent.updatedAt);
+  if (orgJsonContent.updatedAt) {
+    res.dateUpdated = new Date(orgJsonContent.updatedAt);
+  }
 
   res.city = orgJsonContent.legalEntity.address.city;
   res.name = orgJsonContent.legalEntity.name;
