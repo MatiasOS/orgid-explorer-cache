@@ -3,8 +3,8 @@
 ENVIRONMENT=$1
 
 # AWS command opts
-TASK_FAMILY="$ENVIRONMENT-orgid-explorer-cache "
-SERVICE_NAME="$ENVIRONMENT-orgid-explorer-cache "
+TASK_FAMILY="$ENVIRONMENT-orgid-explorer-cache"
+SERVICE_NAME="$ENVIRONMENT-orgid-explorer-cache"
 AWS_REGION="eu-west-1"
 
 # container setup options
@@ -12,7 +12,6 @@ LATEST_TAG=`git describe --abbrev=0 --tags`
 
 # container startup options
 WT_CONFIG=$ENVIRONMENT
-ETH_NETWORK_PROVIDER_RESOLVED="${ENVIRONMENT^^}_ETH_NETWORK_PROVIDER"
 
 TASK_DEF="[{\"portMappings\": [{\"hostPort\": 0,\"protocol\": \"tcp\",\"containerPort\": 8008}],
    \"logConfiguration\": {
@@ -20,7 +19,7 @@ TASK_DEF="[{\"portMappings\": [{\"hostPort\": 0,\"protocol\": \"tcp\",\"containe
       \"options\": {
         \"awslogs-group\": \"shared-docker-cluster-t3\",
         \"awslogs-region\": \"$AWS_REGION\",
-        \"awslogs-stream-prefix\": \"$ENVIRONMENT-orgid-explorer-cache \"
+        \"awslogs-stream-prefix\": \"$ENVIRONMENT-orgid-explorer-cache\"
       }
     },
     \"environment\": [
@@ -29,8 +28,8 @@ TASK_DEF="[{\"portMappings\": [{\"hostPort\": 0,\"protocol\": \"tcp\",\"containe
         \"value\": \"$WT_CONFIG\"
       }
     ],
-    \"image\": \"docker.io/windingtree/orgid-explorer-cache :$LATEST_TAG\",
-    \"name\": \"orgid-explorer-cache \",
+    \"image\": \"docker.io/windingtree/orgid-explorer-cache:$LATEST_TAG\",
+    \"name\": \"orgid-explorer-cache\",
     \"memoryReservation\": 64,
     \"cpu\": 128
   }]"
