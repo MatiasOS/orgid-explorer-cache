@@ -12,7 +12,7 @@ const createTable = async () => {
     for (const fieldName of TIMESTAMP_FIELDS) {
       table.timestamp(fieldName, { useTz: true });
     }
-    table.string('address', 63).notNullable();
+    table.string('address', 63).notNullable().primary();
     table.string('owner', 63).notNullable();
     table.jsonb('orgJsonContent');
     table.float('lifDepositValue');
