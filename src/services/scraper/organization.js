@@ -29,11 +29,11 @@ async function findCoordinates (query) {
   return coordsData;
 }
 
-const scrapeOrganization = async function (envName, segment, orgAddress, providerAddress, lifDepositAddress) {
+const scrapeOrganization = async function (orgAddress, segments, envName, providerAddress, lifDepositAddress) {
   process.stdout.write(`Scraping organization ${orgAddress}: `);
   const res = {
     environment: envName,
-    segments: segment,
+    segments: segments,
     address: orgAddress,
   };
 
