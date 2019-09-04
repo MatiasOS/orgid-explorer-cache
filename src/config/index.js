@@ -23,9 +23,9 @@ module.exports = Object.assign({
     },
     mainnet: {
       entrypoint: '0xefC87a66bDD18F3953B31fF60F47708B7690022b',
-      lifDeposit: '',
-      provider: '',
-      active: false,
+      lifDeposit: '0x37B9A2175B552FD54A5f8663e54c4b4693A696d0',
+      provider: 'https://mainnet.infura.io/v3/7697444efe2e4751bc2f20f7f4549c36',
+      active: true,
     },
   },
 }, require(`./${env}`));
