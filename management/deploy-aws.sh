@@ -26,6 +26,10 @@ TASK_DEF="[{\"portMappings\": [{\"hostPort\": 0,\"protocol\": \"tcp\",\"containe
       {
         \"name\": \"WT_CONFIG\",
         \"value\": \"$WT_CONFIG\"
+      },
+      {
+        \"name\": \"DB_PASSWORD\",
+        \"value\": \"$DB_PASSWORD\"
       }
     ],
     \"image\": \"docker.io/windingtree/orgid-explorer-cache:$LATEST_TAG\",
@@ -33,8 +37,6 @@ TASK_DEF="[{\"portMappings\": [{\"hostPort\": 0,\"protocol\": \"tcp\",\"containe
     \"memoryReservation\": 64,
     \"cpu\": 128
   }]"
-
-echo $TASK_DEF
 
 echo "Updating task definition"
 aws ecs register-task-definition --region $AWS_REGION --family $TASK_FAMILY --container-definitions "$TASK_DEF" > /dev/null
