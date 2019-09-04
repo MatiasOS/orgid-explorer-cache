@@ -254,6 +254,46 @@ describe('Organization Controller', function () {
           });
       });
     });
+
+    describe('paging', () => {
+      before(async () => {
+        await resetDB();
+        for (let i = 1; i <= 50; i++) {
+          const snapshotData = Object.assign({}, EXAMPLE_SNAPSHOT);
+          snapshotData.address = `0x${i}`;
+          await upsert(snapshotData);
+        }
+      });
+
+      it('should page by default', async () => {
+        await request(server)
+          .get('/organizations')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(20);
+          });
+      });
+
+      it('should limit', async () => {
+        await request(server)
+          .get('/organizations?limit=5&sortingField=dateCreated')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(5);
+            expect(res.body[0].address).to.equal('0x1');
+          });
+      });
+
+      it('should offset', async () => {
+        await request(server)
+          .get('/organizations?limit=5&offset=5&sortingField=dateCreated')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.length).to.equal(5);
+            expect(res.body[0].address).to.equal('0x6');
+          });
+      });
+    });
   });
 
   describe('GET /organizations/:address', () => {

@@ -21,12 +21,15 @@ const createTable = async () => {
     table.boolean('isLastSnapshot');
 
     table.index(['address']);
-    table.index(['isLastSnapshot', 'address']);
     table.index(['isLastSnapshot']);
-    table.index(['city']);
-    table.index(['name']);
-    table.index(['gpsCoordsLat']);
-    table.index(['gpsCoordsLon']);
+    table.index(['isLastSnapshot', 'address']);
+    table.index(['isLastSnapshot', 'city']);
+    table.index(['isLastSnapshot', 'name']);
+    table.index(['isLastSnapshot', 'segments']);
+    table.index(['isLastSnapshot', 'dateCreated']);
+    table.index(['isLastSnapshot', 'dateUpdated']);
+    table.index(['isLastSnapshot', 'gpsCoordsLat']);
+    table.index(['isLastSnapshot', 'gpsCoordsLon']);
   });
 };
 
@@ -84,10 +87,22 @@ const applyFilter = (qs, filter) => {
   }
 };
 
+const applyPaging = (qs, filter) => {
+  if (filter && filter.limit) {
+    qs.limit(filter.limit);
+  } else {
+    qs.limit(20);
+  }
+  if (filter && filter.offset) {
+    qs.offset(filter.offset);
+  }
+};
+
 const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   const orderClause = prepareSorting(sortBy);
   const qs = db(TABLE).where({ isLastSnapshot: true }).orderByRaw(orderClause);
   applyFilter(qs, filter);
+  applyPaging(qs, filter);
   const organizations = await qs;
   for (const organization of organizations) {
     serialize(organization);

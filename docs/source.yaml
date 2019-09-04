@@ -75,6 +75,7 @@ paths:
             Field to sort by. Use either `sortingField` or `sortByDistance`. Prefix field name with `-` to reverse direction.
             Default is `-dateCreated` (newest first).
             It is allowed to sort by multiple fields separated by comma (e.g. ?sorting_field=name,address) or multiple query params (e.g. ?sorting_field=name&sorting_field=address).
+            Sortable fields: segments, dateCreated, dateUpdated, city, name, address.
           required: false
           schema:
             type: string
@@ -91,12 +92,14 @@ paths:
           in: query
           description: Max number of items to return.
           required: false
+          default: 20
           schema:
             type: number
         - name: offset
           in: query
           description: Number of items to skip. Use for pagination.
           required: false
+          default: 0
           schema:
             type: number
       responses:
