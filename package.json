@@ -1,6 +1,6 @@
 {
   "name": "orgid-explorer-cache",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Backend service for orgid-explorer",
   "main": "index.js",
   "directories": {
