@@ -27,7 +27,8 @@ describe('Organization Controller', function () {
           .expect(200)
           .expect('content-type', /json/i)
           .expect((res) => {
-            expect(res.body.length).to.equal(0);
+            expect(res.body.items.length).to.equal(0);
+            expect(res.body.totalCount).to.equal(0);
           });
       });
 
@@ -43,7 +44,8 @@ describe('Organization Controller', function () {
           .expect(200)
           .expect('content-type', /json/i)
           .expect((res) => {
-            expect(res.body.length).to.equal(2);
+            expect(res.body.items.length).to.equal(2);
+            expect(res.body.totalCount).to.equal(2);
           });
       });
     });
@@ -76,9 +78,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=address')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x1');
-            expect(res.body[1].address).to.equal('0x2');
-            expect(res.body[2].address).to.equal('0x3');
+            expect(res.body.items[0].address).to.equal('0x1');
+            expect(res.body.items[1].address).to.equal('0x2');
+            expect(res.body.items[2].address).to.equal('0x3');
           });
       });
 
@@ -87,9 +89,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=dateCreated')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x3');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x2');
+            expect(res.body.items[0].address).to.equal('0x3');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x2');
           });
       });
 
@@ -98,9 +100,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=dateUpdated')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x2');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x3');
+            expect(res.body.items[0].address).to.equal('0x2');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x3');
           });
       });
 
@@ -109,9 +111,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=name')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x3');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x2');
+            expect(res.body.items[0].address).to.equal('0x3');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x2');
           });
       });
 
@@ -120,9 +122,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=city')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x3');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x2');
+            expect(res.body.items[0].address).to.equal('0x3');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x2');
           });
       });
 
@@ -131,9 +133,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=segments')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x3');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x2');
+            expect(res.body.items[0].address).to.equal('0x3');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x2');
           });
       });
 
@@ -142,9 +144,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=-address')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x3');
-            expect(res.body[1].address).to.equal('0x2');
-            expect(res.body[2].address).to.equal('0x1');
+            expect(res.body.items[0].address).to.equal('0x3');
+            expect(res.body.items[1].address).to.equal('0x2');
+            expect(res.body.items[2].address).to.equal('0x1');
           });
       });
 
@@ -153,9 +155,9 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=-dateCreated')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x2');
-            expect(res.body[1].address).to.equal('0x1');
-            expect(res.body[2].address).to.equal('0x3');
+            expect(res.body.items[0].address).to.equal('0x2');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x3');
           });
       });
 
@@ -170,10 +172,10 @@ describe('Organization Controller', function () {
           .get('/organizations?sortingField=-name,city')
           .expect(200)
           .expect((res) => {
-            expect(res.body[0].address).to.equal('0x4');
-            expect(res.body[1].address).to.equal('0x2');
-            expect(res.body[2].address).to.equal('0x1');
-            expect(res.body[3].address).to.equal('0x3');
+            expect(res.body.items[0].address).to.equal('0x4');
+            expect(res.body.items[1].address).to.equal('0x2');
+            expect(res.body.items[2].address).to.equal('0x1');
+            expect(res.body.items[3].address).to.equal('0x3');
           });
       });
     });
@@ -217,8 +219,8 @@ describe('Organization Controller', function () {
           .get(`/organizations?dateCreatedFrom=${formatDate(dateLimitFrom)}&dateCreatedTo=${formatDate(dateLimitTo)}`)
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(1);
-            expect(res.body[0].address).to.equal('0x1');
+            expect(res.body.items.length).to.equal(1);
+            expect(res.body.items[0].address).to.equal('0x1');
           });
       });
 
@@ -227,9 +229,9 @@ describe('Organization Controller', function () {
           .get(`/organizations?dateCreatedTo=${formatDate(dateLimitTo)}`)
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(2);
-            expect(res.body[0].address).to.equal('0x1');
-            expect(res.body[1].address).to.equal('0x3');
+            expect(res.body.items.length).to.equal(2);
+            expect(res.body.items[0].address).to.equal('0x1');
+            expect(res.body.items[1].address).to.equal('0x3');
           });
       });
 
@@ -238,9 +240,9 @@ describe('Organization Controller', function () {
           .get(`/organizations?dateCreatedFrom=${formatDate(dateLimitFrom)}`)
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(2);
-            expect(res.body[0].address).to.equal('0x2');
-            expect(res.body[1].address).to.equal('0x1');
+            expect(res.body.items.length).to.equal(2);
+            expect(res.body.items[0].address).to.equal('0x2');
+            expect(res.body.items[1].address).to.equal('0x1');
           });
       });
 
@@ -249,8 +251,8 @@ describe('Organization Controller', function () {
           .get('/organizations?segments=otas')
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(1);
-            expect(res.body[0].address).to.equal('0x3');
+            expect(res.body.items.length).to.equal(1);
+            expect(res.body.items[0].address).to.equal('0x3');
           });
       });
     });
@@ -270,7 +272,8 @@ describe('Organization Controller', function () {
           .get('/organizations')
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(20);
+            expect(res.body.items.length).to.equal(20);
+            expect(res.body.totalCount).to.equal(50);
           });
       });
 
@@ -279,8 +282,9 @@ describe('Organization Controller', function () {
           .get('/organizations?limit=5&sortingField=dateCreated')
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(5);
-            expect(res.body[0].address).to.equal('0x1');
+            expect(res.body.items.length).to.equal(5);
+            expect(res.body.items[0].address).to.equal('0x1');
+            expect(res.body.totalCount).to.equal(50);
           });
       });
 
@@ -289,8 +293,9 @@ describe('Organization Controller', function () {
           .get('/organizations?limit=5&offset=5&sortingField=dateCreated')
           .expect(200)
           .expect((res) => {
-            expect(res.body.length).to.equal(5);
-            expect(res.body[0].address).to.equal('0x6');
+            expect(res.body.items.length).to.equal(5);
+            expect(res.body.items[0].address).to.equal('0x6');
+            expect(res.body.totalCount).to.equal(50);
           });
       });
     });

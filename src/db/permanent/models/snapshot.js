@@ -102,12 +102,14 @@ const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   const orderClause = prepareSorting(sortBy);
   const qs = db(TABLE).where({ isLastSnapshot: true }).orderByRaw(orderClause);
   applyFilter(qs, filter);
+  const countQs = qs.clone();
+  const totalCount = (await countQs.count())[0]['count(*)'];
   applyPaging(qs, filter);
-  const organizations = await qs;
-  for (const organization of organizations) {
+  const items = await qs;
+  for (const organization of items) {
     serialize(organization);
   }
-  return organizations;
+  return { items, totalCount };
 };
 
 const findByAddress = async (address) => {

@@ -13,14 +13,16 @@ describe('Snapshot DB', function () {
 
   it('should be empty initially', async () => {
     const orgs = await findAllCurrent();
-    expect(orgs.length).to.equal(0);
+    expect(orgs.items.length).to.equal(0);
+    expect(orgs.totalCount).to.equal(0);
   });
 
   it('should return inserted data', async () => {
     await upsert(Object.assign({}, EXAMPLE_SNAPSHOT));
 
     const orgs = await findAllCurrent();
-    expect(orgs.length).to.equal(1);
+    expect(orgs.items.length).to.equal(1);
+    expect(orgs.totalCount).to.equal(1);
   });
 
   it('should search by address', async () => {
