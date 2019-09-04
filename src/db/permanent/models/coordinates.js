@@ -4,7 +4,7 @@ const TABLE = 'coords_cache';
 
 const createTable = async () => {
   await db.schema.createTable(TABLE, (table) => {
-    table.string('query').notNullable();
+    table.string('query').notNullable().primary();
     table.float('gpsCoordsLat');
     table.float('gpsCoordsLon');
     table.timestamp('dateCached', { useTz: true });
@@ -22,7 +22,8 @@ const upsert = async (coordsData) => {
   coordsData.dateCached = new Date();
   await db(TABLE).where({ query: coordsData.query }).delete().catch((err) => console.error(err));
   return db(TABLE).insert(coordsData).then(function (inserted) {
-    process.stdout.write(inserted.length + ' coordinates inserted... ');
+    const itemCount = inserted.length || inserted.rowCount; // sqlite and psql return different results
+    process.stdout.write(itemCount + ' coordinates inserted... ');
   });
 };
 

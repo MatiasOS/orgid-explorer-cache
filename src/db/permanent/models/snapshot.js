@@ -12,13 +12,15 @@ const createTable = async () => {
     for (const fieldName of TIMESTAMP_FIELDS) {
       table.timestamp(fieldName, { useTz: true });
     }
-    table.string('address', 63).notNullable().primary();
+    table.string('address', 63).notNullable();
     table.string('owner', 63).notNullable();
     table.jsonb('orgJsonContent');
     table.float('lifDepositValue');
     table.float('gpsCoordsLat');
     table.float('gpsCoordsLon');
     table.boolean('isLastSnapshot');
+
+    table.primary(['address', 'timestamp']);
 
     table.index(['address']);
     table.index(['isLastSnapshot']);
@@ -44,8 +46,9 @@ const upsert = async (snapshotData) => {
       return trx(TABLE).insert(snapshotData);
     });
   })
-    .then(function (inserts) {
-      process.stdout.write(inserts.length + ' organizations updated... ');
+    .then(function (inserted) {
+      const itemCount = inserted.length || inserted.rowCount; // sqlite and psql return different results
+      process.stdout.write(itemCount + ' organizations updated... ');
     });
 };
 

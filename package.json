@@ -52,6 +52,7 @@
     "express-slash": "^2.0.1",
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.0",
+    "pg": "^7.12.1",
     "sqlite3": "^4.1.0",
     "swagger-ui-express": "^4.0.7",
     "web3": "^1.2.1",

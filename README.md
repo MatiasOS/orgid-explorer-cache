@@ -24,5 +24,6 @@ Configurable envvars:
 - `WT_CONFIG` - Environment (dev/test/prod)
 - `LOG_LEVEL` - Log level
 - `BASE_URL` - Base URL where deployed
+- `DB_PASSWORD` - Postgres database password (unless sqlite is used)
 
 See `src/config/` for more options.
