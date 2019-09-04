@@ -41,16 +41,16 @@ const scrapeOrganization = async function (orgAddress, segments, envName, provid
   process.stdout.write('on-chain... ');
   const provider = new Web3.providers.HttpProvider(providerAddress);
   const web3 = new Web3(provider);
-  const hotel = Organization.at(orgAddress);
-  hotel.setProvider(web3.currentProvider);
+  const organization = Organization.at(orgAddress);
+  organization.setProvider(web3.currentProvider);
 
-  res.owner = await hotel.methods.owner().call();
-  res.orgJsonUri = await hotel.methods.orgJsonUri().call();
-  res.orgJsonHash = await hotel.methods.orgJsonHash().call();
-  const createdBlock = await hotel.methods.created().call();
+  res.owner = await organization.methods.owner().call();
+  res.orgJsonUri = await organization.methods.orgJsonUri().call();
+  res.orgJsonHash = await organization.methods.orgJsonHash().call();
+  const createdBlock = await organization.methods.created().call();
   const createdTimestamp = (await web3.eth.getBlock(createdBlock)).timestamp;
   res.dateCreated = new Date(createdTimestamp * 1000);
-  const associatedKeys = await hotel.methods.getAssociatedKeys().call();
+  const associatedKeys = await organization.methods.getAssociatedKeys().call();
   associatedKeys.shift(); // remove zeroeth item
   res.associatedKeys = associatedKeys.join(',');
 
