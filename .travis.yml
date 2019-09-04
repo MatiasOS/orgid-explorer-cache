@@ -39,6 +39,18 @@ jobs:
     - docker push windingtree/orgid-explorer-cache:$TRAVIS_BRANCH
     - docker tag windingtree/orgid-explorer-cache:$TRAVIS_BRANCH windingtree/orgid-explorer-cache:latest
     - docker push windingtree/orgid-explorer-cache:latest
+  - stage: Build and publish scraper docker image
+    sudo: true
+    services:
+      - docker
+    if: tag IS present
+    script:
+      - npm run resolve-swagger-references
+      - docker build -f Dockerfile.scrape -t windingtree/orgid-explorer-cache-scrape:$TRAVIS_BRANCH .
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker push windingtree/orgid-explorer-cache-scrape:$TRAVIS_BRANCH
+      - docker tag windingtree/orgid-explorer-cache-scrape:$TRAVIS_BRANCH windingtree/orgid-explorer-cache-scrape:latest
+      - docker push windingtree/orgid-explorer-cache-scrape:latest
   - stage: NPM release
     if: tag IS present
     script:
