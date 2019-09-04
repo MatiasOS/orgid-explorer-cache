@@ -23,7 +23,6 @@ app.enable('strict routing');
 const swaggerDocument = YAML.load(path.resolve(__dirname, '../docs/swagger.yaml'));
 swaggerDocument.servers = [{ url: config.baseUrl }];
 swaggerDocument.info.version = version;
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,8 +42,13 @@ app.use(morgan(':remote-addr :remote-user [:date[clf]] :method :url HTTP/:http-v
   },
 }));
 
+// Hotels
+const router = express.Router({
+  strict: true,
+});
+
 // Root handler
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.status(200).json({
     docs: `${config.baseUrl}/docs/`,
     info: homepage,
@@ -52,16 +56,12 @@ app.get('/', (req, res) => {
     config: process.env.WT_CONFIG,
   });
 });
-
-// Hotels
-const router = express.Router({
-  strict: true,
-});
-
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.get('/organizations', organizations.getList);
 router.get('/organizations/:orgAddress', organizations.getDetail);
 
 app.use(router);
+app.use('/orgid-explorer-cache', router);
 app.use(slash());
 
 // 404 handler
