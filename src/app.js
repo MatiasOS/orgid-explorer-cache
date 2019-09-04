@@ -61,7 +61,7 @@ router.get('/organizations', organizations.getList);
 router.get('/organizations/:orgAddress', organizations.getDetail);
 
 app.use(router);
-app.use('/orgid-explorer-cache', router);  // TODO remove this when direct load balancer access not needed
+app.use('/orgid-explorer-cache', router); // TODO remove this when direct load balancer access not needed
 app.use(slash());
 
 // 404 handler
