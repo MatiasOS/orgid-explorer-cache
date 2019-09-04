@@ -73,7 +73,7 @@ const prepareSorting = function (sortBy) {
       field = field.substring(1);
       direction = 'desc';
     }
-    res.push(`${field} COLLATE NOCASE ${direction}`);
+    res.push(`"${field}" COLLATE NOCASE ${direction}`);
   }
   return res;
 };
