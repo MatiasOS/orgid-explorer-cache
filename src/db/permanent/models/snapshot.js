@@ -73,7 +73,7 @@ const prepareSorting = function (sortBy) {
       field = field.substring(1);
       direction = 'desc';
     }
-    const makeCaseInsensitive = config.db.client === 'sqlite3' ? 'COLLATE NOCASE' : '';
+    const makeCaseInsensitive = db.client.config.client === 'sqlite3' ? 'COLLATE NOCASE' : '';
     res.push(`"${field}" ${makeCaseInsensitive} ${direction}`);
   }
   return res;
