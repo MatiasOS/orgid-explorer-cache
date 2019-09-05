@@ -104,12 +104,12 @@ const applyPaging = (qs, filter) => {
 
 const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   const orderClause = prepareSorting(sortBy);
-  const qs = db(TABLE).where({ isLastSnapshot: true }).orderByRaw(orderClause);
+  const qs = db(TABLE).where({ isLastSnapshot: true });
   applyFilter(qs, filter);
   const countQs = qs.clone();
   const totalCount = (await countQs.count())[0]['count(*)'];
   applyPaging(qs, filter);
-  const items = await qs;
+  const items = await qs.orderByRaw(orderClause);
   for (const organization of items) {
     serialize(organization);
   }
