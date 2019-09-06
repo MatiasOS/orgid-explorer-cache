@@ -30,6 +30,25 @@ paths:
                   config:
                     type: string
                     description: Which config is the API using.
+                  environments:
+                    type: object
+                    description: Information about which environments are scraped
+                    properties:
+                      entrypoint:
+                        description: ETH address of the Winding Tree Entrypoint governing the environment
+                        type:
+                          $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+                      lifDeposit:
+                        description: ETH address of the Lif Deposit trust clue used in the environment
+                        type:
+                          $ref: '@windingtree/wt-shared-schemas/swagger.yaml#/components/schemas/EthereumAddressType'
+                      provider:
+                        description: URL of used infura provider
+                        type: string
+                      active:
+                        description: Is the environment being scraped?
+                        type: boolean
+
   /organizations:
     get:
       summary: Get a list of organizations.
