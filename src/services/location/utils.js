@@ -59,7 +59,7 @@ const _prepareSortingByDistance = (db, lat, lon) => {
 };
 
 const verifyLocationDistanceFormats = (locations) => {
-  const regex = new RegExp('^[\\d.]+,[\\d.]+:[\\d.]+$');
+  const regex = new RegExp('^-?[\\d.]+,-?[\\d.]+:[\\d.]+$');
   for (const location of locations) {
     const results = regex.exec(location);
     if (results === null || results.index !== 0) {
@@ -69,7 +69,7 @@ const verifyLocationDistanceFormats = (locations) => {
 };
 
 const verifyLocationFormat = (location) => {
-  const regex = new RegExp('^[\\d.]+,[\\d.]+$');
+  const regex = new RegExp('^-?[\\d.]+,-?[\\d.]+$');
   const results = regex.exec(location);
   if (results === null || results.index !== 0) {
     throw new HttpInvalidRequestError(`Invalid lat,lon format ${location}`);
