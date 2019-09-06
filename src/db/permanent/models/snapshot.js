@@ -1,3 +1,5 @@
+const { _prepareSortingByDistance, _convertKilometersToDegrees } = require('../../../services/location/utils');
+const { verifyLocationDistanceFormats, verifyLocationFormat } = require('../../../services/location/utils');
 const { db } = require('../../../config');
 
 const TABLE = 'org_snapshots';
@@ -60,6 +62,7 @@ const serialize = function (organization) {
     organization.associatedKeys = organization.associatedKeys.split(',');
   }
   delete organization.isLastSnapshot;
+  delete organization.location_distance;
 };
 
 const prepareSorting = function (sortBy) {
@@ -80,6 +83,26 @@ const prepareSorting = function (sortBy) {
 };
 
 const applyFilter = (qs, filter) => {
+  if (filter && filter.location) {
+    if (!Array.isArray(filter.location)) {
+      filter.location = [filter.location];
+    }
+    verifyLocationDistanceFormats(filter.location);
+
+    qs.where('address', 'false'); // create always-false clause to start the `orWhere` chain
+    for (let i = 0; i < filter.location.length; i++) {
+      const split = filter.location[i].split(':');
+      const distanceKm = split[1];
+      const latLon = split[0].split(',');
+      const lat = parseFloat(latLon[0]);
+      const lon = parseFloat(latLon[1]);
+      const distanceDeg = _convertKilometersToDegrees(lat, lon, distanceKm);
+      qs.orWhere((builder) => {
+        builder.whereBetween('gpsCoordsLat', [lat - distanceDeg.lat, lat + distanceDeg.lat]);
+        builder.andWhereBetween('gpsCoordsLon', [lon - distanceDeg.lon, lon + distanceDeg.lon]);
+      });
+    }
+  }
   if (filter && filter.dateCreatedFrom) {
     qs.where('dateCreated', '>=', new Date(filter.dateCreatedFrom).getTime());
   }
@@ -102,9 +125,25 @@ const applyPaging = (qs, filter) => {
   }
 };
 
+const prepareSortingByDistance = (qs, sortByDistance) => {
+  verifyLocationFormat(sortByDistance);
+  const split = sortByDistance.split(',');
+  const lat = parseFloat(split[0]);
+  const lon = parseFloat(split[1]);
+  const clause = _prepareSortingByDistance(db(TABLE), lat, lon);
+  return clause;
+};
+
 const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
-  const orderClause = prepareSorting(sortBy);
+  let orderClause;
   const qs = db(TABLE).where({ isLastSnapshot: true });
+  if (filter && filter.sortByDistance) {
+    const clause = prepareSortingByDistance(qs, filter.sortByDistance);
+    qs.select(clause);
+    orderClause = 'location_distance asc';
+  } else {
+    orderClause = prepareSorting(sortBy);
+  }
   applyFilter(qs, filter);
   const countQs = qs.clone();
   const totalCount = (await countQs.count())[0]['count(*)'];

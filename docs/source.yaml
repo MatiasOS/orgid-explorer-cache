@@ -82,7 +82,7 @@ paths:
             default: -dateCreated
         - name: sortByDistance
           in: query
-          description: Sort by distance (in kilometers) from given point (lat, long). Use either `sorting` or `sortByDistance`.
+          description: Sort by distance (in kilometers) from given point (lat, long). Use either `sortingField` or `sortByDistance`.
           required: false
           schema:
             type: string
