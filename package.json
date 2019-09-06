@@ -15,7 +15,7 @@
     "dev": "npm run resolve-swagger-references && WT_CONFIG=dev node src/index.js",
     "resolve-swagger-references": "node management/resolve-swagger-references.js",
     "deploy-aws-production": "./management/deploy-aws.sh prod",
-    "scrape": "./management/scrape.js"
+    "scrape": "node ./management/scrape.js"
   },
   "repository": {
     "type": "git",
