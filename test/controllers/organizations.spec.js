@@ -249,6 +249,11 @@ describe('Organization Controller', function () {
         await upsert(snapshotData1);
         await upsert(snapshotData3);
         await upsert(snapshotData2);
+        // create more snapshots to test proper filtering by isLastSnapshot
+        snapshotData3.timestamp = new Date();
+        await upsert(snapshotData3);
+        snapshotData3.timestamp = new Date();
+        await upsert(snapshotData3);
 
         dateLimitFrom = datePast(5);
         dateLimitTo = dateFuture(5);

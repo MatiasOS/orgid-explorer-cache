@@ -89,19 +89,20 @@ const applyFilter = (qs, filter) => {
     }
     verifyLocationDistanceFormats(filter.location);
 
-    qs.where('address', 'false'); // create always-false clause to start the `orWhere` chain
-    for (let i = 0; i < filter.location.length; i++) {
-      const split = filter.location[i].split(':');
-      const distanceKm = split[1];
-      const latLon = split[0].split(',');
-      const lat = parseFloat(latLon[0]);
-      const lon = parseFloat(latLon[1]);
-      const distanceDeg = _convertKilometersToDegrees(lat, lon, distanceKm);
-      qs.orWhere((builder) => {
-        builder.whereBetween('gpsCoordsLat', [lat - distanceDeg.lat, lat + distanceDeg.lat]);
-        builder.andWhereBetween('gpsCoordsLon', [lon - distanceDeg.lon, lon + distanceDeg.lon]);
-      });
-    }
+    qs.andWhere((where) => {
+      for (let i = 0; i < filter.location.length; i++) {
+        const split = filter.location[i].split(':');
+        const distanceKm = split[1];
+        const latLon = split[0].split(',');
+        const lat = parseFloat(latLon[0]);
+        const lon = parseFloat(latLon[1]);
+        const distanceDeg = _convertKilometersToDegrees(lat, lon, distanceKm);
+        where.orWhere((builder) => {
+          builder.whereBetween('gpsCoordsLat', [lat - distanceDeg.lat, lat + distanceDeg.lat]);
+          builder.andWhereBetween('gpsCoordsLon', [lon - distanceDeg.lon, lon + distanceDeg.lon]);
+        });
+      }
+    });
   }
   if (filter && filter.dateCreatedFrom) {
     qs.where('dateCreated', '>=', new Date(filter.dateCreatedFrom).getTime());
@@ -125,7 +126,7 @@ const applyPaging = (qs, filter) => {
   }
 };
 
-const prepareSortingByDistance = (qs, sortByDistance) => {
+const prepareSortingByDistance = (sortByDistance) => {
   verifyLocationFormat(sortByDistance);
   const split = sortByDistance.split(',');
   const lat = parseFloat(split[0]);
@@ -138,7 +139,7 @@ const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   let orderClause;
   const qs = db(TABLE).where({ isLastSnapshot: true });
   if (filter && filter.sortByDistance) {
-    const clause = prepareSortingByDistance(qs, filter.sortByDistance);
+    const clause = prepareSortingByDistance(filter.sortByDistance);
     qs.select(clause);
     orderClause = 'location_distance asc';
   } else {
