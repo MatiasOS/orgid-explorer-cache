@@ -2,9 +2,13 @@ const { findAllCurrent, findByAddress } = require('../db/permanent/models/snapsh
 
 const getList = async function (req, res, next) {
   try {
-    const sortBy = req.query.sortingField;
-    const { items, totalCount } = await findAllCurrent(req.query, sortBy);
-    res.status(200).json({ items, totalCount });
+    if (req.query.sortByDistance && req.query.sortingField) {
+      res.status(400).json({ message: 'Can\'t sort by both distance and fields.' });
+    } else {
+      const sortBy = req.query.sortingField;
+      const { items, totalCount } = await findAllCurrent(req.query, sortBy);
+      res.status(200).json({ items, totalCount });
+    }
   } catch (e) {
     next(e);
   }

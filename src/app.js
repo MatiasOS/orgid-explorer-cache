@@ -54,6 +54,7 @@ router.get('/', (req, res) => {
     info: homepage,
     version,
     config: process.env.WT_CONFIG,
+    environments: config.environments,
   });
 });
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

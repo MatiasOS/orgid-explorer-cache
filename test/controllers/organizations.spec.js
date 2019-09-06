@@ -51,11 +51,13 @@ describe('Organization Controller', function () {
     });
 
     describe('sorting', () => {
+      let snapshotData1, snapshotData2, snapshotData3;
+
       before(async () => {
         await resetDB();
-        const snapshotData1 = Object.assign({}, EXAMPLE_SNAPSHOT);
-        const snapshotData2 = Object.assign({}, EXAMPLE_SNAPSHOT);
-        const snapshotData3 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        snapshotData1 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        snapshotData2 = Object.assign({}, EXAMPLE_SNAPSHOT);
+        snapshotData3 = Object.assign({}, EXAMPLE_SNAPSHOT);
         snapshotData2.address = '0x2';
         snapshotData3.address = '0x3';
         snapshotData2.dateCreated = dateFuture();
@@ -68,6 +70,12 @@ describe('Organization Controller', function () {
         snapshotData3.city = 'aaa';
         snapshotData2.segments = 'otas';
         snapshotData3.segments = 'airlines';
+        snapshotData1.gpsCoordsLat = 1;
+        snapshotData1.gpsCoordsLon = 1;
+        snapshotData2.gpsCoordsLat = 20;
+        snapshotData2.gpsCoordsLon = 20;
+        snapshotData3.gpsCoordsLat = 30;
+        snapshotData3.gpsCoordsLon = 30;
         await upsert(snapshotData1);
         await upsert(snapshotData3);
         await upsert(snapshotData2);
@@ -162,20 +170,46 @@ describe('Organization Controller', function () {
       });
 
       it('should sort by multiple fields', async () => {
-        const snapshotData4 = Object.assign({}, EXAMPLE_SNAPSHOT);
-        snapshotData4.address = '0x4';
-        snapshotData4.name = 'ZZZ';
-        snapshotData4.city = 'AAA';
-        await upsert(snapshotData4);
+        snapshotData3.name = 'ZZZ';
+        snapshotData3.timestamp = new Date();
+        await upsert(snapshotData3);
 
         await request(server)
           .get('/organizations?sortingField=-name,city')
           .expect(200)
           .expect((res) => {
-            expect(res.body.items[0].address).to.equal('0x4');
+            expect(res.body.items[0].address).to.equal('0x3');
             expect(res.body.items[1].address).to.equal('0x2');
             expect(res.body.items[2].address).to.equal('0x1');
-            expect(res.body.items[3].address).to.equal('0x3');
+          });
+      });
+
+      it('should sort by distance from location', async () => {
+        await request(server)
+          .get('/organizations?sortByDistance=10,20')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.items[0].address).to.equal('0x2');
+            expect(res.body.items[1].address).to.equal('0x1');
+            expect(res.body.items[2].address).to.equal('0x3');
+          });
+      });
+
+      it('should throw when sorting by distance and fields', async () => {
+        await request(server)
+          .get('/organizations?sortByDistance=50.08,14.44&sortingField=name')
+          .expect(400)
+          .expect((res) => {
+            expect(res.body.message).to.equal('Can\'t sort by both distance and fields.');
+          });
+      });
+
+      it('should throw on invalid location specification', async () => {
+        await request(server)
+          .get('/organizations?sortByDistance=50.08:14.44')
+          .expect(400)
+          .expect((res) => {
+            expect(res.body.code).to.match(/Invalid lat,lon format/);
           });
       });
     });
@@ -206,6 +240,12 @@ describe('Organization Controller', function () {
         snapshotData2.dateCreated = dateFuture(10);
         snapshotData3.dateCreated = datePast(10);
         snapshotData3.segments = 'hotels,otas';
+        snapshotData1.gpsCoordsLat = 1;
+        snapshotData1.gpsCoordsLon = 1;
+        snapshotData2.gpsCoordsLat = 20;
+        snapshotData2.gpsCoordsLon = 20;
+        snapshotData3.gpsCoordsLat = 30;
+        snapshotData3.gpsCoordsLon = 30;
         await upsert(snapshotData1);
         await upsert(snapshotData3);
         await upsert(snapshotData2);
@@ -253,6 +293,46 @@ describe('Organization Controller', function () {
           .expect((res) => {
             expect(res.body.items.length).to.equal(1);
             expect(res.body.items[0].address).to.equal('0x3');
+          });
+      });
+
+      it('should filter by location', async () => {
+        await request(server)
+          .get('/organizations?location=40,40:2000')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.items.length).to.equal(1);
+            expect(res.body.items[0].address).to.equal('0x3');
+          });
+      });
+
+      it('should filter by locations', async () => {
+        await request(server)
+          .get('/organizations?location=40,40:2000&location=20,20:1')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.items.length).to.equal(2);
+            expect(res.body.items[0].address).to.equal('0x2');
+            expect(res.body.items[1].address).to.equal('0x3');
+          });
+      });
+
+      it('should filter by locations and fields', async () => {
+        await request(server)
+          .get('/organizations?location=40,40:2000&segments=otas')
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.items.length).to.equal(1);
+            expect(res.body.items[0].address).to.equal('0x3');
+          });
+      });
+
+      it('should throw on invalid locations', async () => {
+        await request(server)
+          .get('/organizations?location=40,40,20')
+          .expect(400)
+          .expect((res) => {
+            expect(res.body.code).to.match(/Invalid lat,lon:distance format/);
           });
       });
     });
