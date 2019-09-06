@@ -51,9 +51,9 @@ const _prepareSortingByDistance = (db, lat, lon) => {
   const scale = Math.cos(_toRadians(Math.abs(lat)));
   const scaleSquared = Math.pow(scale, 2);
   const clause = knex.raw(`*, ${LATITUDE_DEGREE_LENGTH} * ${LATITUDE_DEGREE_LENGTH} * ` +
-    `(gpsCoordsLat - ${lat}) * (gpsCoordsLat - ${lat}) + ` +
+    `("gpsCoordsLat" - ${lat}) * ("gpsCoordsLat" - ${lat}) + ` +
     `${LONGITUDE_DEGREE_LENGTH_EQUATOR} * ${LONGITUDE_DEGREE_LENGTH_EQUATOR} * ` +
-    `${scaleSquared} * (gpsCoordsLon - ${lon}) * (gpsCoordsLon - ${lon}) ` +
+    `${scaleSquared} * ("gpsCoordsLon" - ${lon}) * ("gpsCoordsLon" - ${lon}) ` +
     'as location_distance');
   return clause;
 };

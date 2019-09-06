@@ -138,6 +138,10 @@ const prepareSortingByDistance = (sortByDistance) => {
 const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   let orderClause;
   const qs = db(TABLE).where({ isLastSnapshot: true });
+  applyFilter(qs, filter);
+  const countQs = qs.clone();
+  const countClause = db.client.config.client === 'sqlite3' ? 'count(*)' : 'count';
+  const totalCount = (await countQs.count())[0][countClause];
   if (filter && filter.sortByDistance) {
     const clause = prepareSortingByDistance(filter.sortByDistance);
     qs.select(clause);
@@ -145,10 +149,6 @@ const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   } else {
     orderClause = prepareSorting(sortBy);
   }
-  applyFilter(qs, filter);
-  const countQs = qs.clone();
-  const countClause = db.client.config.client === 'sqlite3' ? 'count(*)' : 'count';
-  const totalCount = (await countQs.count())[0][countClause];
   applyPaging(qs, filter);
   const items = await qs.orderByRaw(orderClause);
   for (const organization of items) {
