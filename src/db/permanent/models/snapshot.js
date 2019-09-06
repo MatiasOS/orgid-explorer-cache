@@ -146,7 +146,8 @@ const findAllCurrent = async (filter, sortBy = '-dateCreated') => {
   }
   applyFilter(qs, filter);
   const countQs = qs.clone();
-  const totalCount = (await countQs.count())[0]['count(*)'];
+  const countClause = db.client.config.client === 'sqlite3' ? 'count(*)' : 'count';
+  const totalCount = (await countQs.count())[0][countClause];
   applyPaging(qs, filter);
   const items = await qs.orderByRaw(orderClause);
   for (const organization of items) {
