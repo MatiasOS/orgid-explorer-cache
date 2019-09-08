@@ -8,7 +8,7 @@ Use `--reinit` flag to drop existing tables and recreate empty DB. Also useful f
 ```
 nvm use
 npm i
-WT_CONFIG=dev node management/scrape.js --reinit
+WT_CONFIG=dev -r dotenv/config node management/scrape.js --reinit
 npm run dev
 ```
 
@@ -25,5 +25,8 @@ Configurable envvars:
 - `LOG_LEVEL` - Log level
 - `BASE_URL` - Base URL where deployed
 - `DB_PASSWORD` - Postgres database password (unless sqlite is used)
+- `DB_HOST` - Postgres database host (unless sqlite is used). Defaults to `orgid-explorer-cache-db.ccv2mtbtm9st.eu-west-1.rds.amazonaws.com`
+- `DB_USER` - Postgres database user (unless sqlite is used). Defaults to `postgres`
+- `DB_NAME` - Postgres database name (unless sqlite is used). Defaults to `orgid-explorer-cache-db`
 
 See `src/config/` for more options.

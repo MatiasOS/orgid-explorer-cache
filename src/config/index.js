@@ -1,4 +1,5 @@
 const winston = require('winston');
+require('dotenv').config();
 
 const env = process.env.WT_CONFIG || 'dev';
 
