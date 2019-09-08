@@ -105,10 +105,10 @@ const applyFilter = (qs, filter) => {
     });
   }
   if (filter && filter.dateCreatedFrom) {
-    qs.where('dateCreated', '>=', new Date(filter.dateCreatedFrom).getTime());
+    qs.where('dateCreated', '>=', new Date(filter.dateCreatedFrom));
   }
   if (filter && filter.dateCreatedTo) {
-    qs.where('dateCreated', '<', new Date(filter.dateCreatedTo).getTime());
+    qs.where('dateCreated', '<', new Date(filter.dateCreatedTo));
   }
   if (filter && filter.segments) {
     qs.where('segments', 'like', `%${filter.segments}%`);
