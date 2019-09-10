@@ -8,7 +8,7 @@ Use `--reinit` flag to drop existing tables and recreate empty DB. Also useful f
 ```
 nvm use
 npm i
-WT_CONFIG=dev -r dotenv/config node management/scrape.js --reinit
+WT_CONFIG=dev node -r dotenv/config management/scrape.js --reinit
 npm run dev
 ```
 
